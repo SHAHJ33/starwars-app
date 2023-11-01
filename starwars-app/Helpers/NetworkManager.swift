@@ -68,7 +68,13 @@ class NetworkManager {
         }
     }
     
+    var cachedPeopleResult: PeopleResult?
     func getPeopleList(onSuccess: @escaping OnPeopleSuccess, onError: @escaping OnError) {
+        if let result = cachedPeopleResult {
+            onSuccess(result)
+            return
+        }
+        
         if let url = URL(string: "\(BASE_URL)\(PEOPLE_URL)") {
             let task = session.dataTask(with: url) { data, response, error in
                 if let error = error {
@@ -84,6 +90,7 @@ class NetworkManager {
                 do {
                     if response.statusCode == 200 {
                         let result = try JSONDecoder().decode(PeopleResult.self, from: data)
+                        self.cachedPeopleResult = result
                         onSuccess(result)
                     } else {
                         onError("ERROR Response -> \(response.statusCode)")
@@ -97,7 +104,12 @@ class NetworkManager {
         }
     }
     
+    var cachedFilmResult: FilmsResult?
     func getFilmsList(onSuccess: @escaping OnFilmsSuccess, onError: @escaping OnError) {
+        if let result = cachedFilmResult {
+            onSuccess(result)
+            return
+        }
         if let url = URL(string: "\(BASE_URL)\(FILMS_URL)") {
             let task = session.dataTask(with: url) { data, response, error in
                 if let error = error {
@@ -113,6 +125,7 @@ class NetworkManager {
                 do {
                     if response.statusCode == 200 {
                         let result = try JSONDecoder().decode(FilmsResult.self, from: data)
+                        self.cachedFilmResult = result
                         onSuccess(result)
                     } else {
                         onError("ERROR Response -> \(response.statusCode)")

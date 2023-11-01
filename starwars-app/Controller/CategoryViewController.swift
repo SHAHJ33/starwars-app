@@ -8,7 +8,8 @@
 import UIKit
 
 class CategoryViewController: UITableViewController {
-
+    @IBOutlet weak var activityBar: UIActivityIndicatorView!
+    
     var selectedCategory: Root? {
         didSet {
             switch selectedCategory?.name {
@@ -128,12 +129,16 @@ class CategoryViewController: UITableViewController {
     var peopleList = Array<People>()
     
     func loadPeople() {
+        activityBar.isHidden = false
+        tableView.isScrollEnabled = false
         NetworkManager.instance.getPeopleList { peopleResult in
             DispatchQueue.main.async {
                 if peopleResult.count > 0 {
                     if let pList = peopleResult.results {
                         self.peopleList = pList
                         self.tableView.reloadData()
+                        self.tableView.isScrollEnabled = true
+                        self.activityBar.isHidden = true
                     }
                 }
             }
@@ -145,12 +150,16 @@ class CategoryViewController: UITableViewController {
     var filmsList = [Film]()
     
     func loadFilms() {
+        activityBar.isHidden = false
+        tableView.isScrollEnabled = false
         NetworkManager.instance.getFilmsList { filmsResult in
             DispatchQueue.main.async {
                 if filmsResult.count > 0 {
                     if let pList = filmsResult.results {
                         self.filmsList = pList
                         self.tableView.reloadData()
+                        self.tableView.isScrollEnabled = true
+                        self.activityBar.isHidden = true
                     }
                 }
             }
